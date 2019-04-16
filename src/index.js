@@ -7,13 +7,13 @@ function on(name, ctx, fn) {
     }
     const tuple = {ctx: ctx, fn: fn};
     const callbacks = events[name];
-    console.log(tuple)
+    console.log('on tuple', tuple)
     if (Array.isArray(callbacks)) {
         callbacks.push(tuple);
     } else {
         events[name] = [tuple];
     }
-    console.log(events)
+    console.log('on events', events)
 }
 
 function off(name, ctx) {
@@ -42,10 +42,11 @@ function emit(name) {
     let callbacks = events[name];
     let args;
     if (Array.isArray(callbacks)) {
+        console.log('emit', arguments)
         args = [].slice.call(arguments, 1)
         callbacks.map((tuple) => {
-            console.log(tuple, args)
-            tuple.fn.call(tuple.ctx, args)
+            console.log('emit', tuple, args)
+            tuple.fn.apply(tuple.ctx, args)
         });
     }
 }
