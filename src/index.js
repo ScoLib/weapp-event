@@ -6,7 +6,6 @@ function on(name, ctx, fn) {
         return
     }
     const tuple = {ctx: ctx, fn: fn};
-    // var tuple = [ctx, fn];
     const callbacks = events[name];
     console.log(tuple)
     if (Array.isArray(callbacks)) {
@@ -18,10 +17,22 @@ function on(name, ctx, fn) {
 }
 
 function off(name, ctx) {
+    // all
+    if (!arguments.length) {
+        events = {}
+        return
+    }
+
     const callbacks = events[name];
+    if (!callbacks) return
+    // remove all handlers
+    if (arguments.length === 1) {
+        delete events[name]
+        return 
+    }
+
     if (Array.isArray(callbacks)) {
         events[name] = callbacks.filter((tuple) => {
-            // return tuple[0] != ctx;
             return tuple.ctx != ctx;
         });
     }
@@ -33,12 +44,6 @@ function emit(name) {
     if (Array.isArray(callbacks)) {
         args = [].slice.call(arguments, 1)
         callbacks.map((tuple) => {
-            // var self = tuple[0];
-            // var callback = tuple[1];
-            // callback.call(self, args);
-            // const ctx = tuple[0];
-            // const callback = tuple[1];
-            // callback.call(ctx, data);
             console.log(tuple, args)
             tuple.fn.call(tuple.ctx, args)
         });
